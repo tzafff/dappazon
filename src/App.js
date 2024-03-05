@@ -14,9 +14,25 @@ import config from './config.json'
 
 function App() {
 
+  const [account, setAccount] = useState(null)
+
+  const loadBlockchainData = async () => {
+  
+  }
+
+  useEffect(() => {
+    loadBlockchainData()
+
+    window.ethereum.on('accountsChanged', (accounts) => {
+      const newAccount = ethers.utils.getAddress(accounts[0])
+      setAccount(newAccount)
+      console.log('Account changed:', newAccount);
+    })
+  },[])
+
   return (
     <div>
-
+      <Navigation account={account} setAccount={setAccount} />
       <h2>Welcome to Dappazon</h2>
 
     </div>

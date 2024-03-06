@@ -84,7 +84,7 @@ function App() {
   const withdrawHandler = async () => {
     console.log("withdraw")
     const signer = await provider.getSigner();
-    transaction = await dappazon.connect(signer).withdraw()
+    const transaction = await dappazon.connect(signer).withdraw()
     await transaction.wait()
 
     setHasBought(true)

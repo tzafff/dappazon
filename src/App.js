@@ -87,7 +87,6 @@ function App() {
     const transaction = await dappazon.connect(signer).withdraw()
     await transaction.wait()
 
-    setHasBought(true)
   }
 
   return (

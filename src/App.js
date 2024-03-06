@@ -16,6 +16,7 @@ function App() {
   const [account, setAccount] = useState(null);
   const [provider, setProvider] = useState(null);
   const [dappazon, setDappazon] = useState(null);
+  const [owner, setOwner] = useState(null);
 
   const [electronics, setElectronics] = useState(null);
   const [clothing, setClothing] = useState(null);
@@ -26,7 +27,6 @@ function App() {
 
   const togglePop = (item) => {
     setItem(item);
-    console.log(toggle)
     toggle ? setToggle(false) : setToggle(true);
   };
 
@@ -44,6 +44,14 @@ function App() {
       provider
     );
 
+    console.log("owner");
+    const owner = await dappazon.owner();
+    console.log(owner);
+    setOwner(owner);
+
+    // console.log(dappazon)
+    // console.log(network)
+    // console.log(provider)
     setDappazon(dappazon);
 
     // Load products
@@ -73,10 +81,28 @@ function App() {
     });
   }, []);
 
+  const withdrawHandler = async () => {
+    console.log("withdraw")
+    const signer = await provider.getSigner();
+    transaction = await dappazon.connect(signer).withdraw()
+    await transaction.wait()
+
+    setHasBought(true)
+  }
+
   return (
     <div>
       <Navigation account={account} setAccount={setAccount} />
       <h2>Dappazon Best Sellers</h2>
+
+      {owner === account && (
+        <>
+          <h2>Withdraw Funds from Sales (Only Owner of Contract)</h2>
+          <button type="button" className="nav__connect" style={{ margin: '10px 150px' }} onClick={withdrawHandler}>
+            Withdraw
+          </button>
+        </>
+      )}
 
       {electronics && clothing && toys && (
         <>
@@ -95,7 +121,13 @@ function App() {
       )}
 
       {toggle && (
-        <Product item={item} provider={provider} account={account} dappazon={dappazon} togglePop={togglePop} />
+        <Product
+          item={item}
+          provider={provider}
+          account={account}
+          dappazon={dappazon}
+          togglePop={togglePop}
+        />
       )}
     </div>
   );

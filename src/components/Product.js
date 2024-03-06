@@ -12,16 +12,33 @@ const Product = ({ item, provider, account, dappazon, togglePop }) => {
   
 
   const fetchDetails = async () => {
-    const events = await dappazon.queryFilter("Buy")
-    const orders = events.filter(
-      (event) => event.args.buyer === account && event.args.itemId.toString() === item.id.toString()
-    )
-
-    if(orders.length === 0 ) return
-
-    const order = await dappazon.orders(account, orders[0].args.orderId)
-    setOrder(order)
-  }
+    try {
+      console.log("test");
+      const blockNumber = await provider.getBlockNumber();
+      console.log(blockNumber)
+      const targetBlockNumber = blockNumber - 1000; // Adjust as needed
+      const events = await dappazon.queryFilter("Buy", targetBlockNumber);
+      console.log(events);
+  
+      const orders = events.filter(
+        (event) =>
+          event.args.buyer === account &&
+          event.args.itemId.toString() === item.id.toString()
+      );
+        console.log(orders.length)
+      if (orders.length === 0) {
+        console.log("No matching orders found.");
+        return;
+      }
+  
+      const order = await dappazon.orders(account, orders[0].args.orderId);
+      setOrder(order);
+    } catch (error) {
+      console.error("Error fetching details:", error);
+      // Handle the error accordingly, e.g., throw the error or display a message to the user.
+    }
+  };
+  
 
   const buyHandler = async () => {
     const signer = await provider.getSigner();

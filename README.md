@@ -29,3 +29,7 @@ In a separate terminal execute:
 
 ### 6. Start frontend
 `$ npm run start`
+
+
+Deploy on Polygon Mumbai Need to add alchemy key and private key on hardhar.config.js
+npx hardhat run ./scripts/deploy.js --network mumbai 

@@ -31,6 +31,19 @@ function App() {
   };
 
   const loadBlockchainData = async () => {
+
+    const storedAccount = localStorage.getItem("walletAccount");
+    if(storedAccount) {
+      setAccount(storedAccount)
+    }
+
+    window.ethereum.on("accountsChanged", (accounts) => {
+      const newAccount = ethers.utils.getAddress(accounts[0]);
+      // Store the new account in localStorage
+      localStorage.setItem("walletAccount", newAccount);
+      setAccount(newAccount);
+    });
+
     // Connect to blockchain
     const provider = new ethers.providers.Web3Provider(window.ethereum);
     setProvider(provider);
@@ -44,14 +57,10 @@ function App() {
       provider
     );
 
-    console.log("owner");
-    const owner = await dappazon.owner();
-    console.log(owner);
+
+    const owner = await dappazon.owner()
     setOwner(owner);
 
-    // console.log(dappazon)
-    // console.log(network)
-    // console.log(provider)
     setDappazon(dappazon);
 
     // Load products
@@ -74,34 +83,15 @@ function App() {
   useEffect(() => {
     loadBlockchainData();
 
-    window.ethereum.on("accountsChanged", (accounts) => {
-      const newAccount = ethers.utils.getAddress(accounts[0]);
-      setAccount(newAccount);
-      console.log("Account changed:", newAccount);
-    });
+    
   }, []);
 
-  const withdrawHandler = async () => {
-    console.log("withdraw")
-    const signer = await provider.getSigner();
-    const transaction = await dappazon.connect(signer).withdraw()
-    await transaction.wait()
-
-  }
 
   return (
     <div>
-      <Navigation account={account} setAccount={setAccount} />
+      <Navigation account={account} setAccount={setAccount} dappazon={dappazon} provider={provider} owner={owner}/>
       <h2>Dappazon Best Sellers</h2>
 
-      {owner === account && (
-        <>
-          <h2>Withdraw Funds from Sales (Only Owner of Contract)</h2>
-          <button type="button" className="nav__connect" style={{ margin: '10px 150px' }} onClick={withdrawHandler}>
-            Withdraw
-          </button>
-        </>
-      )}
 
       {electronics && clothing && toys && (
         <>

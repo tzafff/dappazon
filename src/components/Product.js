@@ -13,19 +13,16 @@ const Product = ({ item, provider, account, dappazon, togglePop }) => {
 
   const fetchDetails = async () => {
     try {
-      console.log("test");
+      
       const blockNumber = await provider.getBlockNumber();
-      console.log(blockNumber)
       const targetBlockNumber = blockNumber - 1000; // Adjust as needed
       const events = await dappazon.queryFilter("Buy", targetBlockNumber);
-      console.log(events);
   
       const orders = events.filter(
         (event) =>
           event.args.buyer === account &&
           event.args.itemId.toString() === item.id.toString()
       );
-        console.log(orders.length)
       if (orders.length === 0) {
         console.log("No matching orders found.");
         return;
@@ -67,7 +64,7 @@ const Product = ({ item, provider, account, dappazon, togglePop }) => {
 
           <p>{item.address}</p>
 
-          <h2>{ethers.utils.formatUnits(item.cost.toString(), "ether")} Matic </h2>
+          <h2>{ethers.utils.formatUnits(item.cost.toString(), "ether")} ETH </h2>
 
           <hr />
 
@@ -83,7 +80,7 @@ const Product = ({ item, provider, account, dappazon, togglePop }) => {
         </div>
 
         <div className="product__order">
-          <h1>{ethers.utils.formatUnits(item.cost.toString(), "ether")} Matic</h1>
+          <h1>{ethers.utils.formatUnits(item.cost.toString(), "ether")} ETH</h1>
           <p>
             FREE delivery <br />
             <strong>

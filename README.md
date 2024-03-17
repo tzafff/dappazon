@@ -31,5 +31,7 @@ In a separate terminal execute:
 `$ npm run start`
 
 
-Deploy on Polygon Mumbai Need to add alchemy key and private key on hardhar.config.js
+Deploy on Polygon Mumbai Need to add alchemy key and private key on hardhat.config.js
 npx hardhat run ./scripts/deploy.js --network mumbai 
+
+npx hardhat run scripts/deploy.js --network sepolia

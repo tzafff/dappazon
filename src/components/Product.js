@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { ethers } from "ethers";
+import Swal from 'sweetalert2';
 
 // Components
 import Rating from "./Rating";
@@ -38,9 +39,36 @@ const Product = ({ item, provider, account, dappazon, togglePop }) => {
   
 
   const buyHandler = async () => {
-    const signer = await provider.getSigner();
-    let transaction = dappazon.connect(signer).buy(item.id, {value: item.cost})
-    await transaction.wait()
+    try{
+      const signer = await provider.getSigner();
+      let transaction = await dappazon.connect(signer).buy(item.id, {value: item.cost})
+      await transaction.wait()
+      Swal.fire({
+        title: "Item Bought",
+        text: "Item Bought Successfully",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+    } catch (error) {
+      if (error.message.includes('insufficient funds')) {
+        // Display a customized error message for insufficient funds using SweetAlert2
+        Swal.fire({
+            title: 'Insufficient Funds',
+            text: 'You do not have enough funds to complete the transaction.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+        });
+    } else {
+        // Display a generic error message for other errors using SweetAlert2
+        Swal.fire({
+            title: 'Error',
+            text: 'An error occurred while processing your request. Please try again later.',
+            icon: 'error',
+            confirmButtonText: 'OK',
+        });
+    }
+    }
+    
 
     setHasBought(true)
   }

@@ -13,9 +13,26 @@ const Navigation = ({ account, setAccount, dappazon, provider, owner }) => {
   const storedAccount = localStorage.getItem("walletAccount");
 
   const handleWithdraw =  async () => {
-    const signer = await provider.getSigner();
-    const transaction = await dappazon.connect(signer).withdraw();
-    await transaction.wait()
+    try{
+      const signer = await provider.getSigner();
+      const transaction = await dappazon.connect(signer).withdraw();
+      await transaction.wait()
+
+      Swal.fire({
+        title: "Withdraw",
+        text: "Withdraw Funds Successfully",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
+    } catch (error) {
+      Swal.fire({
+        title: 'Error',
+        text: 'An error occurred while processing your request. Please try again later.',
+        icon: 'error',
+        confirmButtonText: 'OK',
+    });
+    }
+    
   }
 
   return (

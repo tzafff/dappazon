@@ -25,7 +25,6 @@ const Product = ({ item, provider, account, dappazon, togglePop }) => {
           event.args.itemId.toString() === item.id.toString()
       );
       if (orders.length === 0) {
-        console.log("No matching orders found.");
         return;
       }
   
@@ -50,6 +49,7 @@ const Product = ({ item, provider, account, dappazon, togglePop }) => {
         confirmButtonText: "OK",
       });
     } catch (error) {
+      console.log(error.message)
       if (error.message.includes('insufficient funds')) {
         // Display a customized error message for insufficient funds using SweetAlert2
         Swal.fire({
